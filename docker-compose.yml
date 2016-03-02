@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  db:
+    container_name: movies-database
+    image: mvertes/alpine-mongo
+    ports:
+      - 27017
+
+  movies-back-end:
+    container_name: movies-back-end
+    image: ivanmarban/movies-back-end
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      PORT: 3000
+      MONGODB_HOST: db
+      MONGODB_DB: movies
+
+  movies-front-end:
+    container_name: movies-front-end
+    image: ivanmarban/movies-front-end
+    ports:
+      - 8080:80
+    depends_on:
+      - movies-back-end
+    links:
+      - movies-back-end
